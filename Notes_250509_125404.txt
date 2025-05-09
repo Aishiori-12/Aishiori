@@ -1,0 +1,359 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Smart Business Assistant Chatbot - Blue/Purple/Pink Theme</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* Background gradient */
+    body {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 50%, #ff6a88 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      color: #f0e9ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Chat container */
+    .chatbot-container {
+      max-width: 420px;
+      width: 100%;
+      background: linear-gradient(145deg, #2a1a4d, #3e2a6f);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(255, 105, 180, 0.5);
+      display: flex;
+      flex-direction: column;
+      min-height: 600px;
+      overflow: hidden;
+      border: 2px solid #ff6a88;
+    }
+
+    /* Header */
+    .chat-header {
+      background: linear-gradient(90deg, #8e2de2, #4a00e0);
+      color: #ffd6f7;
+      padding: 24px 24px 16px 24px;
+      font-size: 1.6em;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-align: center;
+      text-shadow: 0 0 5px #ff6a88;
+      user-select: none;
+    }
+
+    /* Chat area */
+    .chat-area {
+      flex: 1;
+      background: #3b2a59;
+      padding: 18px 12px 8px 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scrollbar-width: thin;
+      scrollbar-color: #ff6a88 #2a1a4d;
+    }
+    /* Scrollbar for Webkit */
+    .chat-area::-webkit-scrollbar {
+      width: 8px;
+    }
+    .chat-area::-webkit-scrollbar-track {
+      background: #2a1a4d;
+      border-radius: 10px;
+    }
+    .chat-area::-webkit-scrollbar-thumb {
+      background: #ff6a88;
+      border-radius: 10px;
+    }
+
+    /* Chat bubbles */
+    .bubble {
+      max-width: 80%;
+      padding: 14px 20px;
+      border-radius: 20px;
+      font-size: 1em;
+      line-height: 1.5;
+      margin-bottom: 2px;
+      word-break: break-word;
+      box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+      transition: background 0.3s ease;
+    }
+    .user-bubble {
+      background: linear-gradient(90deg, #ff6a88, #ff99ac);
+      color: #2a1a4d;
+      align-self: flex-end;
+      border-bottom-right-radius: 6px;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.6);
+    }
+    .assistant-bubble {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: #f0e9ff;
+      align-self: flex-start;
+      border-bottom-left-radius: 6px;
+      border: 1px solid #ff6a88;
+      box-shadow: 0 4px 15px rgba(101, 41, 255, 0.6);
+    }
+
+    /* Input area */
+    .input-area {
+      background: #2a1a4d;
+      padding: 18px 18px 12px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border-top: 2px solid #ff6a88;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    textarea {
+      flex: 1;
+      border: 1.5px solid #ff6a88;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 1em;
+      resize: none;
+      min-height: 40px;
+      background: #3b2a59;
+      color: #f0e9ff;
+      transition: border 0.3s;
+      font-weight: 500;
+      box-shadow: inset 0 0 8px #6a11cb;
+    }
+    textarea::placeholder {
+      color: #d8b8e6;
+      font-style: italic;
+    }
+    textarea:focus {
+      outline: none;
+      border: 2px solid #ff6a88;
+      box-shadow: 0 0 10px #ff6a88;
+      background: #4a2a7a;
+    }
+
+    .btn {
+      background: linear-gradient(90deg, #ff6a88, #ff99ac);
+      color: #2a1a4d;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 14px;
+      font-size: 1em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.6);
+      user-select: none;
+    }
+    .btn:hover {
+      background: linear-gradient(90deg, #ff99ac, #ff4a6a);
+      box-shadow: 0 6px 20px rgba(255, 77, 107, 0.9);
+    }
+
+    .file-input {
+      flex: 1;
+      font-size: 1em;
+      border-radius: 14px;
+      background: #3b2a59;
+      border: 1.5px solid #ff6a88;
+      padding: 10px 12px;
+      color: #f0e9ff;
+      font-weight: 500;
+      box-shadow: inset 0 0 8px #6a11cb;
+      cursor: pointer;
+      transition: border 0.3s;
+    }
+    .file-input:hover {
+      border-color: #ff99ac;
+      box-shadow: 0 0 12px #ff6a88;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 26px;
+      height: 26px;
+      border: 3px solid #d8b8e6;
+      border-top: 3px solid #ff6a88;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .chatbot-container {
+        max-width: 100vw;
+        min-height: 100vh;
+        border-radius: 0;
+        margin: 0;
+      }
+      .chat-header {
+        font-size: 1.3em;
+        padding: 18px 12px 12px 12px;
+      }
+      .chat-area {
+        padding: 12px 8px 6px 8px;
+      }
+      .input-area {
+        padding: 12px 12px 10px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chatbot-container" role="main" aria-label="Smart Business Assistant Chatbot">
+    <div class="chat-header" aria-live="polite">
+      🤖 Smart Business Assistant
+    </div>
+    <div class="chat-area" id="chatArea" aria-live="polite" aria-atomic="true" tabindex="0">
+      <div class="assistant-bubble bubble" role="alert">
+        Hi! I can analyze your mood from a review or a selfie and suggest improvements or recommendations. How can I help you today?
+      </div>
+    </div>
+    <div class="input-area">
+      <form id="textForm" class="input-row" autocomplete="off" onsubmit="event.preventDefault(); submitText();">
+        <textarea id="textInput" placeholder="Type your review or feedback here..." rows="1" aria-label="Customer feedback text input"></textarea>
+        <button class="btn" type="submit" aria-label="Send text feedback">Send</button>
+      </form>
+      <form id="imgForm" class="input-row" autocomplete="off" onsubmit="event.preventDefault(); submitImage();">
+        <input type="file" id="imgInput" class="file-input" accept="image/*" aria-label="Upload facial expression image" />
+        <button class="btn" type="submit" aria-label="Analyze facial expression image">Analyze Face</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_TOKEN = 'YOUR_LUXAND_API_KEY'; // <-- Insert your Luxand.cloud API key here
+
+    const chatArea = document.getElementById('chatArea');
+    const textInput = document.getElementById('textInput');
+    const imgInput = document.getElementById('imgInput');
+
+    function addBubble(text, isUser) {
+      const bubble = document.createElement('div');
+      bubble.className = (isUser ? 'user-bubble' : 'assistant-bubble') + ' bubble';
+      bubble.innerHTML = text;
+      chatArea.appendChild(bubble);
+      chatArea.scrollTop = chatArea.scrollHeight;
+      chatArea.focus();
+    }
+
+    function submitText() {
+      const text = textInput.value.trim();
+      if (!text) return;
+      addBubble(text, true);
+      textInput.value = '';
+      analyzeText(text);
+    }
+
+    function analyzeText(text) {
+      const positiveWords = ['good', 'great', 'excellent', 'amazing', 'happy', 'love', 'satisfied', 'awesome', 'fantastic', 'wonderful', 'nice', 'best'];
+      const negativeWords = ['bad', 'poor', 'terrible', 'unhappy', 'hate', 'angry', 'disappointed', 'awful', 'worst', 'slow', 'broken'];
+      let score = 0;
+      positiveWords.forEach(word => { if (text.toLowerCase().includes(word)) score++; });
+      negativeWords.forEach(word => { if (text.toLowerCase().includes(word)) score--; });
+      let mood = 'Neutral';
+      if (score > 0) mood = 'Positive';
+      if (score < 0) mood = 'Negative';
+
+      let suggestion = '';
+      if (mood === 'Positive') {
+        suggestion = '🎉 Thank you for your positive feedback! Would you like to see similar products or enjoy a loyalty reward?';
+      } else if (mood === 'Negative') {
+        suggestion = '😔 Sorry to hear that. We can offer you a discount or connect you with support. Would you like help?';
+      } else {
+        suggestion = '🙂 Thank you for your feedback! If you have more details or need assistance, let us know.';
+      }
+      setTimeout(() => {
+        addBubble(`<strong>Detected mood:</strong> ${mood}<br><span class="suggestion">${suggestion}</span>`, false);
+      }, 400);
+    }
+
+    function submitImage() {
+      const file = imgInput.files[0];
+      if (!file) {
+        addBubble('Please select an image to analyze.', false);
+        return;
+      }
+      addBubble('<span class="spinner" aria-label="Loading spinner"></span> Analyzing your facial expression...', false);
+
+      const formData = new FormData();
+      formData.append('photo', file, file.name);
+
+      fetch('https://api.luxand.cloud/photo/emotions', {
+        method: 'POST',
+        headers: { 'token': API_TOKEN },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        removeLastAssistantBubbleIfSpinner();
+        if (data.status !== 'success' || !data.faces || data.faces.length === 0) {
+          addBubble('😕 No face detected or unable to analyze emotion. Please try another image.', false);
+          return;
+        }
+        const emotions = data.faces[0].emotions;
+        let topEmotion = null, topScore = -1;
+        for (let [emotion, value] of Object.entries(emotions)) {
+          if (value > topScore) {
+            topScore = value;
+            topEmotion = emotion;
+          }
+        }
+        let mood = capitalize(topEmotion);
+        let suggestion = '';
+        if (topEmotion === 'happiness' || topEmotion === 'surprise') {
+          suggestion = '😊 You look happy! Would you like to check out our new arrivals or enjoy a loyalty reward?';
+        } else if (topEmotion === 'neutral') {
+          suggestion = '😐 You seem neutral. Can I help you find something or answer any questions?';
+        } else if (
+          topEmotion === 'sadness' ||
+          topEmotion === 'anger' ||
+          topEmotion === 'disgust' ||
+          topEmotion === 'fear'
+        ) {
+          suggestion = '😔 You seem upset. Would you like special assistance or a personal offer to improve your experience?';
+        } else {
+          suggestion = '🙂 How can I assist you further?';
+        }
+        addBubble(`<strong>Detected emotion:</strong> ${mood} <span style="color:#d8b8e6;">(Score: ${topScore.toFixed(2)})</span><br><span class="suggestion">${suggestion}</span>`, false);
+      })
+      .catch(err => {
+        removeLastAssistantBubbleIfSpinner();
+        addBubble('⚠️ Error analyzing image. Please try again.', false);
+      });
+      imgInput.value = '';
+    }
+
+    function removeLastAssistantBubbleIfSpinner() {
+      const bubbles = chatArea.getElementsByClassName('assistant-bubble');
+      if (bubbles.length > 0) {
+        const last = bubbles[bubbles.length - 1];
+        if (last.innerHTML.includes('spinner')) {
+          chatArea.removeChild(last);
+        }
+      }
+    }
+
+    function capitalize(str) {
+      if (!str) return '';
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+  </script>
+</body>
+</html>
